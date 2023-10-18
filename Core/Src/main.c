@@ -128,13 +128,19 @@ int main(void) {
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Initialization");
     HAL_ADCEx_Calibration_Start(&hadc1);
     HAL_ADC_Start_IT(&hadc1);
+    LedController_Init();
 //    HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
 //    HAL_Delay(1000);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
 //    HAL_Delay(1000);
 //    ESP_Send("AT\r\n");
-    LedController_OnLed(1);
+    LedData_t blue_led = {
+            ZERO_COLOUR_INTENSITY,
+            ZERO_COLOUR_INTENSITY,
+            AVERAGE_COLOR_INTENSITY
+    };
+    LedController_OnLed(1, &blue_led);
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Device initialized");
     /* USER CODE END 2 */
 
