@@ -1,6 +1,3 @@
-// All credit to Carmine Noviello for this code
-// https://github.com/cnoviello/mastering-stm32/blob/master/nucleo-f030R8/system/src/retarget/retarget.c
-
 #include <_ansi.h>
 #include <_syslist.h>
 #include <errno.h>

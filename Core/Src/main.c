@@ -136,9 +136,9 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
     RetargetInit(&huart2);
+    debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Initialization");
     HAL_ADCEx_Calibration_Start(&hadc1);
     HAL_ADC_Start_IT(&hadc1);
-    printf("started\r\n");
 //    HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
 //    HAL_Delay(1000);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
@@ -146,12 +146,13 @@ int main(void)
 //    HAL_Delay(1000);
 //    ESP_Send("AT\r\n");
     LedController_OnLed(1);
+    debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Device initialized");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     while (1) {
-        printf("Temp -> %f\r\n", (float)(ADC_GetValue()*3.3*100/4096));
+        debug(DEBUG_PRINT_INFO, DEVICE_CORE,"Temp -> %f", (float)(ADC_GetValue()*3.3*100/4096));
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         HAL_Delay(1000);
     /* USER CODE END WHILE */

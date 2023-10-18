@@ -35,6 +35,7 @@ extern "C" {
 #include <string.h>
 #include "retarget.h"
 #include "led_controller.h"
+#include "debug.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
