@@ -24,6 +24,7 @@
 #include "usart.h"
 #include "gpio.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -31,8 +32,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-char str1[250]={0};
-typedef struct USART_prop{
+char str1[250] = {0};
+typedef struct USART_prop {
     uint8_t usart_buf[250];
     uint8_t usart_cnt;
 } USART_prop_ptr;
@@ -63,40 +64,29 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
-{
-    if(hadc->Instance == ADC1) //check if the interrupt comes from ACD1
-    {
-        ADC_SetValue(HAL_ADC_GetValue(&hadc1));
-    }
-}
-
-void UART1_RxCpltCallBack(void)
-{
+void UART1_RxCpltCallBack(void) {
     uint8_t b;
     b = str1[0];
-    if (usartprop.usart_cnt>249)
-    {
-        usartprop.usart_cnt=0;
-        HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+    if (usartprop.usart_cnt > 249) {
+        usartprop.usart_cnt = 0;
+        HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
         return;
     }
     usartprop.usart_buf[usartprop.usart_cnt] = b;
-    if(b==0x0A)
-    {
-        usartprop.usart_buf[usartprop.usart_cnt+1]=0;
-        printf("[ESP] -> %s", (char*)usartprop.usart_buf);
-        usartprop.usart_cnt=0;
-        HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+    if (b == 0x0A) {
+        usartprop.usart_buf[usartprop.usart_cnt + 1] = 0;
+        printf("[ESP] -> %s", (char *) usartprop.usart_buf);
+        usartprop.usart_cnt = 0;
+        HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
         return;
     }
     usartprop.usart_cnt++;
-    HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+    HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
 }
 
 void ESP_Send(char *string) {
     uint8_t size = strlen(string);
-    HAL_UART_Transmit(&huart1, (uint8_t*)string, size, -1);
+    HAL_UART_Transmit(&huart1, (uint8_t *) string, size, -1);
     HAL_Delay(1000);
 }
 /* USER CODE END 0 */
@@ -105,36 +95,35 @@ void ESP_Send(char *string) {
   * @brief  The application entry point.
   * @retval int
   */
-int main(void)
-{
-  /* USER CODE BEGIN 1 */
+int main(void) {
+    /* USER CODE BEGIN 1 */
 
-  /* USER CODE END 1 */
+    /* USER CODE END 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
+    /* MCU Configuration--------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    HAL_Init();
 
-  /* USER CODE BEGIN Init */
+    /* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+    /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+    /* Configure the system clock */
+    SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+    /* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+    /* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_USART2_UART_Init();
-  MX_ADC1_Init();
-  MX_USART1_UART_Init();
-  MX_TIM2_Init();
-  /* USER CODE BEGIN 2 */
+    /* Initialize all configured peripherals */
+    MX_GPIO_Init();
+    MX_DMA_Init();
+    MX_USART2_UART_Init();
+    MX_ADC1_Init();
+    MX_USART1_UART_Init();
+    MX_TIM2_Init();
+    /* USER CODE BEGIN 2 */
     RetargetInit(&huart2);
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Initialization");
     HAL_ADCEx_Calibration_Start(&hadc1);
@@ -147,65 +136,67 @@ int main(void)
 //    ESP_Send("AT\r\n");
     LedController_OnLed(1);
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Device initialized");
-  /* USER CODE END 2 */
+    /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
     while (1) {
-        debug(DEBUG_PRINT_INFO, DEVICE_CORE,"Temp -> %f", (float)(ADC_GetValue()*3.3*100/4096));
+        debug(
+                DEBUG_PRINT_INFO,
+                DEVICE_CORE,
+                "Temp -> %u.%u",
+                Temperature_GetIntValue(),
+                Temperature_GetDecValue()
+        );
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-        HAL_Delay(1000);
-    /* USER CODE END WHILE */
+        HAL_Delay(WORK_CYCLE);
+        /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
+        /* USER CODE BEGIN 3 */
     }
-  /* USER CODE END 3 */
+    /* USER CODE END 3 */
 }
 
 /**
   * @brief System Clock Configuration
   * @retval None
   */
-void SystemClock_Config(void)
-{
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+void SystemClock_Config(void) {
+    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    /** Initializes the RCC Oscillators according to the specified parameters
+    * in the RCC_OscInitTypeDef structure.
+    */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+    RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+        Error_Handler();
+    }
 
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+    /** Initializes the CPU, AHB and APB buses clocks
+    */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+                                  | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
+        Error_Handler();
+    }
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+    PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
+        Error_Handler();
+    }
 }
 
 /* USER CODE BEGIN 4 */
@@ -216,14 +207,13 @@ void SystemClock_Config(void)
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
-void Error_Handler(void)
-{
-  /* USER CODE BEGIN Error_Handler_Debug */
+void Error_Handler(void) {
+    /* USER CODE BEGIN Error_Handler_Debug */
     /* User can add his own implementation to report the HAL error return state */
     __disable_irq();
     while (1) {
     }
-  /* USER CODE END Error_Handler_Debug */
+    /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT

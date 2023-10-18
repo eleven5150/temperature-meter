@@ -36,6 +36,7 @@ extern "C" {
 #include "retarget.h"
 #include "led_controller.h"
 #include "debug.h"
+#include "temperature.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -71,7 +72,7 @@ void Error_Handler(void);
 #define ESP_RST_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-
+#define WORK_CYCLE 1000
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

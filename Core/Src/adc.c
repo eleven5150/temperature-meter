@@ -124,15 +124,22 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
 /* USER CODE BEGIN 1 */
 
-static uint32_t adc_value = 0;
+static uint16_t ADC_VALUE = 0;
 
 
-void ADC_SetValue(uint32_t value) {
-    adc_value = value;
+void ADC_SetValue(uint16_t value) {
+    ADC_VALUE = value;
 }
 
-uint32_t ADC_GetValue() {
-    return adc_value;
+uint16_t ADC_GetValue() {
+    return ADC_VALUE;
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
+    if(hadc->Instance == ADC1) {
+        ADC_SetValue(HAL_ADC_GetValue(&hadc1));
+        Temperature_UpdateValue();
+    }
 }
 
 
