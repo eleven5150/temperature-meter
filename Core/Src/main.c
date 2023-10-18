@@ -19,6 +19,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -29,7 +31,12 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+char str1[250]={0};
+typedef struct USART_prop{
+    uint8_t usart_buf[250];
+    uint8_t usart_cnt;
+} USART_prop_ptr;
+USART_prop_ptr usartprop = {{0}, 0};
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -63,6 +70,35 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
         ADC_SetValue(HAL_ADC_GetValue(&hadc1));
     }
 }
+
+void UART1_RxCpltCallBack(void)
+{
+    uint8_t b;
+    b = str1[0];
+    if (usartprop.usart_cnt>249)
+    {
+        usartprop.usart_cnt=0;
+        HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+        return;
+    }
+    usartprop.usart_buf[usartprop.usart_cnt] = b;
+    if(b==0x0A)
+    {
+        usartprop.usart_buf[usartprop.usart_cnt+1]=0;
+        printf("[ESP] -> %s", (char*)usartprop.usart_buf);
+        usartprop.usart_cnt=0;
+        HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+        return;
+    }
+    usartprop.usart_cnt++;
+    HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+}
+
+void ESP_Send(char *string) {
+    uint8_t size = strlen(string);
+    HAL_UART_Transmit(&huart1, (uint8_t*)string, size, -1);
+    HAL_Delay(1000);
+}
 /* USER CODE END 0 */
 
 /**
@@ -93,18 +129,28 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_ADC1_Init();
+  MX_USART1_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
     RetargetInit(&huart2);
     HAL_ADCEx_Calibration_Start(&hadc1);
     HAL_ADC_Start_IT(&hadc1);
+    printf("started\r\n");
+//    HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
+//    HAL_Delay(1000);
+//    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
+//    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
+//    HAL_Delay(1000);
+//    ESP_Send("AT\r\n");
+    LedController_OnLed(1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     while (1) {
-        printf("ADC V -> %f\r\n", ADC_GetValue()*3.3/4096);
         printf("Temp -> %f\r\n", (float)(ADC_GetValue()*3.3*100/4096));
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         HAL_Delay(1000);
