@@ -1,6 +1,5 @@
 #include "led_controller.h"
 
-uint16_t pwmData[(WS2812_DATA_BIT_WIDTH * NUMBER_OF_LEDS) + RESERVE_TAIL_NUMBER_OF_LEDS] = {0};
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM2) {
@@ -18,8 +17,13 @@ static void LedController_SetLedData(uint8_t led_num, LedData_t *led_data) {
 
 static void LedController_SendDataToStrip(void) {
     debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "%s -> start", __FUNCTION__);
-    uint32_t indx = 0;
+    uint32_t bit_number = 0;
     uint32_t color;
+
+    uint16_t *leds_data_encoded = (uint16_t *)calloc(
+            (WS2812_DATA_BIT_WIDTH * NUMBER_OF_LEDS) + RESERVE_TAIL_BITS,
+            sizeof(uint16_t)
+            );
 
     for (uint16_t i = 0; i < NUMBER_OF_LEDS; i++) {
         color = (
@@ -30,31 +34,27 @@ static void LedController_SendDataToStrip(void) {
 
         for (int8_t j = WS2812_DATA_BIT_WIDTH - 1; j >= 0; j--) {
             if (color & (1 << j)) {
-                pwmData[indx] = 40;  // 2/3 of 90
+                leds_data_encoded[bit_number] = PWM_ENCODED_1;
             } else {
-                pwmData[indx] = 20;  // 1/3 of 90
+                leds_data_encoded[bit_number] = PWM_ENCODED_0;
             }
-            indx++;
+            bit_number++;
         }
     }
 
-    // TODO: refactor to memset
-    for (int i = 0; i < RESERVE_TAIL_NUMBER_OF_LEDS; i++) {
-        pwmData[indx] = 0;
-        indx++;
-    }
-
-    HAL_TIM_PWM_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t *) pwmData, indx);
+    HAL_TIM_PWM_Start_DMA(
+            &htim2,
+            TIM_CHANNEL_1,
+            (uint32_t *) leds_data_encoded,
+            bit_number + RESERVE_TAIL_BITS
+            );
     HAL_Delay(TIME_FOR_SENDING_DATA_TO_STRIP);
     HAL_TIM_PWM_Stop_DMA(&htim2, TIM_CHANNEL_1);
+    free(leds_data_encoded);
     debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "%s -> end", __FUNCTION__);
 }
 
 // public --------------------------------------------------------------------------------------------------------------
-
-void LedController_Init() {
-    memset(LEDS_DATA, 0, sizeof(LedData_t) * NUMBER_OF_LEDS);
-}
 
 void LedController_OnLed(int led_number, LedData_t *led_data) {
     debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "%s -> start", __FUNCTION__);
@@ -90,10 +90,6 @@ void LedController_LoadingEffect(void) {
 }
 
 void LedController_OffAllLeds(void) {
-    LedData_t off_led = {0};
-    for (uint8_t i = 0; i < NUMBER_OF_LEDS; i++) {
-        LedController_SetLedData(i,&off_led);
-    }
-
+    memset(LEDS_DATA, 0, sizeof(LedData_t) * NUMBER_OF_LEDS);
     LedController_SendDataToStrip();
 }
