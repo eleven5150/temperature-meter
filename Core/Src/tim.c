@@ -119,10 +119,10 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *timHandle) {
         /**TIM2 GPIO Configuration
         PA15     ------> TIM2_CH1
         */
-        GPIO_InitStruct.Pin = GPIO_PIN_15;
+        GPIO_InitStruct.Pin = LED_STRIP_OUT_Pin;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+        HAL_GPIO_Init(LED_STRIP_OUT_GPIO_Port, &GPIO_InitStruct);
 
         __HAL_AFIO_REMAP_TIM2_PARTIAL_1();
 

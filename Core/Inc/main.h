@@ -64,14 +64,20 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define ADC_TEMP_Pin GPIO_PIN_0
 #define ADC_TEMP_GPIO_Port GPIOA
-#define USART_TX_Pin GPIO_PIN_2
-#define USART_TX_GPIO_Port GPIOA
-#define USART_RX_Pin GPIO_PIN_3
-#define USART_RX_GPIO_Port GPIOA
+#define DEBUG_TX_Pin GPIO_PIN_2
+#define DEBUG_TX_GPIO_Port GPIOA
+#define DEBUG_RX_Pin GPIO_PIN_3
+#define DEBUG_RX_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_5
 #define LED_GPIO_Port GPIOA
 #define ESP_RST_Pin GPIO_PIN_8
 #define ESP_RST_GPIO_Port GPIOA
+#define ESP_TX_Pin GPIO_PIN_9
+#define ESP_TX_GPIO_Port GPIOA
+#define ESP_RX_Pin GPIO_PIN_10
+#define ESP_RX_GPIO_Port GPIOA
+#define LED_STRIP_OUT_Pin GPIO_PIN_15
+#define LED_STRIP_OUT_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 #define WORK_CYCLE 300
