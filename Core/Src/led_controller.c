@@ -3,9 +3,9 @@
 uint16_t pwmData[(WS2812_DATA_BIT_WIDTH * NUMBER_OF_LEDS) + RESERVE_TAIL_NUMBER_OF_LEDS] = {0};
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
-//    if (htim->Instance == TIM2) {
+    if (htim->Instance == TIM2) {
         HAL_TIM_PWM_Stop_DMA(&htim2, TIM_CHANNEL_1);
-//    }
+    }
 }
 
 // private -------------------------------------------------------------------------------------------------------------
@@ -22,14 +22,13 @@ static void LedController_SendDataToStrip(void) {
     uint32_t color;
 
     for (uint16_t i = 0; i < NUMBER_OF_LEDS; i++) {
-        debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "%s -> i -> %u", __FUNCTION__, i);
         color = (
                 (LEDS_DATA[i].green_intense << SHIFT_FOR_GEEN_LED) |
                 (LEDS_DATA[i].red_intense << SHIFT_FOR_RED_LED) |
                 (LEDS_DATA[i].blue_intense)
                 );
 
-        for (uint8_t j = WS2812_DATA_BIT_WIDTH - 1; j >= 0; j--) {
+        for (int8_t j = WS2812_DATA_BIT_WIDTH - 1; j >= 0; j--) {
             if (color & (1 << j)) {
                 pwmData[indx] = 40;  // 2/3 of 90
             } else {
@@ -37,10 +36,7 @@ static void LedController_SendDataToStrip(void) {
             }
             indx++;
         }
-
     }
-
-    debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "%s -> for loop end", __FUNCTION__);
 
     // TODO: refactor to memset
     for (int i = 0; i < RESERVE_TAIL_NUMBER_OF_LEDS; i++) {
@@ -49,7 +45,6 @@ static void LedController_SendDataToStrip(void) {
     }
 
     HAL_TIM_PWM_Start_DMA(&htim2, TIM_CHANNEL_1, (uint32_t *) pwmData, indx);
-    debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "%s -> HAL_TIM_PWM_Start_DMA end", __FUNCTION__);
     HAL_Delay(TIME_FOR_SENDING_DATA_TO_STRIP);
     HAL_TIM_PWM_Stop_DMA(&htim2, TIM_CHANNEL_1);
     debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "%s -> end", __FUNCTION__);
