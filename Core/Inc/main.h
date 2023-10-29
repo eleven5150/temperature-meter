@@ -62,6 +62,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define ADC_TEMP_Pin GPIO_PIN_0
+#define ADC_TEMP_GPIO_Port GPIOA
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
@@ -72,7 +74,7 @@ void Error_Handler(void);
 #define ESP_RST_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-#define WORK_CYCLE 1000
+#define WORK_CYCLE 300
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

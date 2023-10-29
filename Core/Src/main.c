@@ -24,7 +24,6 @@
 #include "usart.h"
 #include "gpio.h"
 
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -135,13 +134,7 @@ int main(void) {
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
 //    HAL_Delay(1000);
 //    ESP_Send("AT\r\n");
-    LedData_t blue_led = {
-            ZERO_COLOUR_INTENSITY,
-            ZERO_COLOUR_INTENSITY,
-            AVERAGE_COLOR_INTENSITY
-    };
-    LedController_OnLed(1, &blue_led);
-    LedController_OnLed(3, &blue_led);
+
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Device initialized");
     /* USER CODE END 2 */
 
@@ -155,6 +148,7 @@ int main(void) {
                 Temperature_GetIntValue(),
                 Temperature_GetDecValue()
         );
+        LedController_OnLedsFromStart(Temperature_GetIntValue());
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         HAL_Delay(WORK_CYCLE);
         /* USER CODE END WHILE */

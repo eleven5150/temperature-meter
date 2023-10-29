@@ -3,9 +3,12 @@
 
 #include <stdint.h>
 #include "adc.h"
+#include "led_controller.h"
 
 #define VOLTAGE 3.3
 #define TEMPERATURE_MULTIPLIER 1000
+
+#define LED_STRIP_CORRECTION 41
 
 uint16_t Temperature_GetFullValue();
 

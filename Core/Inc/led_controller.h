@@ -8,6 +8,8 @@
 #include "tim.h"
 #include "dma.h"
 
+#define LED_STRIP_ON
+
 #define NUMBER_OF_LEDS 144
 #define RESERVE_TAIL_BITS 50
 
@@ -16,7 +18,7 @@
 #define SHIFT_FOR_RED_LED 8
 #define TIME_FOR_SENDING_DATA_TO_STRIP 10
 #define ZERO_COLOUR_INTENSITY 0
-#define AVERAGE_COLOR_INTENSITY 31
+#define AVERAGE_COLOR_INTENSITY 10
 
 #define PWM_ENCODED_1 40
 #define PWM_ENCODED_0 20
@@ -30,15 +32,19 @@ typedef struct LedData {
 
 static void LedController_SetLedData(uint8_t led_num, LedData_t *led_data);
 
-static void LedController_SendDataToStrip(void);
+static void LedController_SendDataToStrip();
+
+static void LedController_ClearLedData();
 
 void LedController_OnLed(int led_number, LedData_t *led_data);
 
 void LedController_OffLed(int led_number);
 
-void LedController_OffAllLeds(void);
+void LedController_OffAllLeds();
 
-void LedController_LoadingEffect(void);
+void LedController_LoadingEffect();
+
+void LedController_OnLedsFromStart(uint8_t num_of_leds);
 
 
 static LedData_t LEDS_DATA[NUMBER_OF_LEDS];

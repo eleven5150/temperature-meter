@@ -4,7 +4,10 @@
 static uint16_t TEMP_VALUE = 0;
 
 void Temperature_UpdateValue() {
-    TEMP_VALUE = (uint16_t)(ADC_GetValue() * VOLTAGE * TEMPERATURE_MULTIPLIER / ADC_CAPACITY);
+    TEMP_VALUE = (uint16_t) (ADC_GetValue() * VOLTAGE * TEMPERATURE_MULTIPLIER / ADC_CAPACITY);
+#ifdef LED_STRIP_ON
+    TEMP_VALUE -= LED_STRIP_CORRECTION;
+#endif
 }
 
 uint16_t Temperature_GetFullValue() {

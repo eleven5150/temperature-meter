@@ -80,9 +80,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *adcHandle) {
         /**ADC1 GPIO Configuration
         PA0-WKUP     ------> ADC1_IN0
         */
-        GPIO_InitStruct.Pin = GPIO_PIN_0;
+        GPIO_InitStruct.Pin = ADC_TEMP_Pin;
         GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+        HAL_GPIO_Init(ADC_TEMP_GPIO_Port, &GPIO_InitStruct);
 
         /* ADC1 interrupt Init */
         HAL_NVIC_SetPriority(ADC1_2_IRQn, 0, 0);
@@ -105,7 +105,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *adcHandle) {
         /**ADC1 GPIO Configuration
         PA0-WKUP     ------> ADC1_IN0
         */
-        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0);
+        HAL_GPIO_DeInit(ADC_TEMP_GPIO_Port, ADC_TEMP_Pin);
 
         /* ADC1 interrupt Deinit */
         HAL_NVIC_DisableIRQ(ADC1_2_IRQn);
