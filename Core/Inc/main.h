@@ -38,6 +38,7 @@ extern "C" {
 #include "debug.h"
 #include "temperature.h"
 #include "uart_ringbuffer.h"
+#include "esp.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

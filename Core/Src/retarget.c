@@ -5,7 +5,7 @@
 #include <sys/times.h>
 #include <limits.h>
 #include <signal.h>
-#include <../Inc/retarget.h>
+#include <retarget.h>
 #include <stdint.h>
 #include <stdio.h>
 
