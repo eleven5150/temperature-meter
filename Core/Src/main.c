@@ -58,14 +58,36 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+void ESP_Receive() {
+    uint16_t buff_size = 2;
+    char *buff = (char *)calloc(buff_size, sizeof(char));
+    while (IsDataAvailable())
+    {
+        char sym = (char)Uart_read();
+        HAL_Delay(200);
+        if ((uint8_t)sym == 0xFF) {
+            continue;
+        }
+        buff[buff_size - 2] = sym;
+
+        if (sym == '\n') {
+            break;
+        }
+
+        buff_size++;
+        buff = (char *)realloc(buff, buff_size);
+    }
+    buff[buff_size - 1] = '\0';
+    debug(DEBUG_PRINT_TRACE, DEVICE_ESP, "%s", buff);
+    free(buff);
+}
+
 
 void ESP_Send(char *string) {
     char *msg = calloc(strlen(string) + 1, sizeof(char));
     sprintf(msg, "%s\r\n", string);
     debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "-> [%s]: %s", DEVICE_ESP, string);
-    uint8_t size = strlen(msg);
-    HAL_UART_Transmit(&huart1, (uint8_t *) msg, size + 1, -1);
-    HAL_Delay(2000);
+    Uart_sendstring(msg);
     free(msg);
 }
 /* USER CODE END 0 */
@@ -114,7 +136,7 @@ int main(void) {
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
 //    HAL_Delay(1000);
-//    ESP_Send("AT");
+    ESP_Send("AT");
 //    ESP_Send("AT+CWMODE=1");
 //    ESP_Send("AT+CIPMUX=1");
 //    ESP_Send("AT+CIFSR");
@@ -127,7 +149,6 @@ int main(void) {
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
-//        HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
 //        debug(
 //                DEBUG_PRINT_INFO,
 //                DEVICE_CORE,
@@ -136,10 +157,9 @@ int main(void) {
 //                Temperature_GetDecValue()
 //        );
 //        LedController_OnLedsFromStart(Temperature_GetIntValue());
-        while (IsDataAvailable())
+        if (IsDataAvailable())
         {
-            char data = (char)Uart_read();  // read the data in the rx_buffer
-            debug(DEBUG_PRINT_TRACE, DEVICE_ESP, "recv -> %c", data);  // send the data to the uart
+            ESP_Receive();
         }
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         HAL_Delay(WORK_CYCLE);
