@@ -31,12 +31,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-char str1[250] = {0};
-typedef struct USART_prop {
-    uint8_t usart_buf[250];
-    uint8_t usart_cnt;
-} USART_prop_ptr;
-USART_prop_ptr usartprop = {{0}, 0};
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -63,30 +57,16 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void UART1_RxCpltCallBack(void) {
-    uint8_t b;
-    b = str1[0];
-    if (usartprop.usart_cnt > 249) {
-        usartprop.usart_cnt = 0;
-        HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
-        return;
-    }
-    usartprop.usart_buf[usartprop.usart_cnt] = b;
-    if (b == 0x0A) {
-        usartprop.usart_buf[usartprop.usart_cnt + 1] = 0;
-        printf("[ESP] -> %s", (char *) usartprop.usart_buf);
-        usartprop.usart_cnt = 0;
-        HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
-        return;
-    }
-    usartprop.usart_cnt++;
-    HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
-}
+
 
 void ESP_Send(char *string) {
-    uint8_t size = strlen(string);
-    HAL_UART_Transmit(&huart1, (uint8_t *) string, size, -1);
-    HAL_Delay(1000);
+    char *msg = calloc(strlen(string) + 1, sizeof(char));
+    sprintf(msg, "%s\r\n", string);
+    debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "-> [%s]: %s", DEVICE_ESP, string);
+    uint8_t size = strlen(msg);
+    HAL_UART_Transmit(&huart1, (uint8_t *) msg, size + 1, -1);
+    HAL_Delay(2000);
+    free(msg);
 }
 /* USER CODE END 0 */
 
@@ -128,12 +108,18 @@ int main(void) {
     HAL_ADCEx_Calibration_Start(&hadc1);
     HAL_ADC_Start_IT(&hadc1);
     LedController_OffAllLeds();
-//    HAL_UART_Receive_IT(&huart1,(uint8_t*)str1,1);
-//    HAL_Delay(1000);
+    Ringbuf_init();
+//    HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
+    HAL_Delay(1000);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
 //    HAL_Delay(1000);
-//    ESP_Send("AT\r\n");
+//    ESP_Send("AT");
+//    ESP_Send("AT+CWMODE=1");
+//    ESP_Send("AT+CIPMUX=1");
+//    ESP_Send("AT+CIFSR");
+//    ESP_Send("AT+CIPSERVER=1,80");
+
 
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Device initialized");
     /* USER CODE END 2 */
@@ -141,14 +127,20 @@ int main(void) {
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
-        debug(
-                DEBUG_PRINT_INFO,
-                DEVICE_CORE,
-                "Temp -> %u.%u",
-                Temperature_GetIntValue(),
-                Temperature_GetDecValue()
-        );
-        LedController_OnLedsFromStart(Temperature_GetIntValue());
+//        HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
+//        debug(
+//                DEBUG_PRINT_INFO,
+//                DEVICE_CORE,
+//                "Temp -> %u.%u",
+//                Temperature_GetIntValue(),
+//                Temperature_GetDecValue()
+//        );
+//        LedController_OnLedsFromStart(Temperature_GetIntValue());
+        while (IsDataAvailable())
+        {
+            char data = (char)Uart_read();  // read the data in the rx_buffer
+            debug(DEBUG_PRINT_TRACE, DEVICE_ESP, "recv -> %c", data);  // send the data to the uart
+        }
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         HAL_Delay(WORK_CYCLE);
         /* USER CODE END WHILE */
@@ -201,7 +193,6 @@ void SystemClock_Config(void) {
 }
 
 /* USER CODE BEGIN 4 */
-
 /* USER CODE END 4 */
 
 /**

@@ -37,6 +37,7 @@ extern "C" {
 #include "led_controller.h"
 #include "debug.h"
 #include "temperature.h"
+#include "uart_ringbuffer.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
