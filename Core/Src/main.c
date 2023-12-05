@@ -99,7 +99,7 @@ int main(void) {
     HAL_ADCEx_Calibration_Start(&hadc1);
     HAL_ADC_Start_IT(&hadc1);
     LedController_OffAllLeds();
-    Ringbuf_init();
+    UART_RingBuf_Init();
 //    HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
     HAL_Delay(1000);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
@@ -126,7 +126,7 @@ int main(void) {
 //                Temperature_GetDecValue()
 //        );
 //        LedController_OnLedsFromStart(Temperature_GetIntValue());
-        if (IsDataAvailable())
+        if (UART_RingBuf_IsDataAvailable())
         {
             ESP_Receive();
         }

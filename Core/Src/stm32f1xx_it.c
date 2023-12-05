@@ -60,9 +60,9 @@ extern DMA_HandleTypeDef hdma_tim2_ch1;
 extern UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN EV */
-extern void Uart_isr(UART_HandleTypeDef *huart);
+extern void UART_RingBuf_IRQHandler(UART_HandleTypeDef *huart);
 
-extern uint16_t timeout;
+extern uint16_t uart_ringbuf_timeout;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -174,8 +174,8 @@ void PendSV_Handler(void) {
   */
 void SysTick_Handler(void) {
     /* USER CODE BEGIN SysTick_IRQn 0 */
-    if (timeout > 0) {
-        timeout--;
+    if (uart_ringbuf_timeout > 0) {
+        uart_ringbuf_timeout--;
     }
     /* USER CODE END SysTick_IRQn 0 */
     HAL_IncTick();
@@ -222,7 +222,7 @@ void ADC1_2_IRQHandler(void) {
   */
 void USART1_IRQHandler(void) {
     /* USER CODE BEGIN USART1_IRQn 0 */
-    Uart_isr(&huart1);
+    UART_RingBuf_IRQHandler(&huart1);
     /* USER CODE END USART1_IRQn 0 */
 //  HAL_UART_IRQHandler(&huart1);
     /* USER CODE BEGIN USART1_IRQn 1 */
