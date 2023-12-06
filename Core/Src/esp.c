@@ -9,8 +9,7 @@ void ESP_Receive() {
     char sym;
     while (UART_RingBuf_IsDataAvailable()) {
         if (!UART_RingBuf_GetChar(&sym)) {
-            HAL_Delay(30);
-//            debug(DEBUG_PRINT_TRACE, DEVICE_ESP, "sym -> %c", sym);
+            HAL_Delay(1);
 
             buff[it] = sym;
 
@@ -21,6 +20,7 @@ void ESP_Receive() {
             }
         }
     }
+    ESP_CheckRequest(buff);
     debug(DEBUG_PRINT_TRACE, DEVICE_ESP, "%s", buff);
 }
 
@@ -31,4 +31,30 @@ void ESP_Send(char *string) {
     debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "-> [%s]: %s", DEVICE_ESP, string);
     UART_RingBuf_PutString(msg);
     free(msg);
+}
+
+
+void ESP_CheckRequest(char *buff) {
+    char *header_ptr = strstr(buff, REQUEST_HEADER);
+    if (header_ptr) {
+        ulong channel_num = strtoul(&header_ptr[5], NULL, 10);
+        debug(DEBUG_PRINT_TRACE, DEVICE_CORE, "Channel -> %lu", channel_num);
+
+        char response_data[1024] = {0};
+        sprintf(response_data, HTTP_HEADER);
+        char tmp[64] = {};
+        sprintf(tmp, HTTP_CORE, Temperature_GetIntValue(), Temperature_GetDecValue());
+        strcat(response_data, tmp);
+        strcat(response_data, HTTP_FOOTER);
+        ESP_SendToClient(channel_num, response_data);
+    }
+}
+
+void ESP_SendToClient(ulong channel_num, char *data) {
+    uint32_t data_len = strlen(data);
+    char cmd[32];
+    sprintf(cmd, "AT+CIPSEND=%lu,%lu\r\n", channel_num, data_len);
+    ESP_Send(cmd);
+    ESP_Send(data);
+    ESP_Send("AT+CIPCLOSE=5");
 }

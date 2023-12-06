@@ -117,13 +117,13 @@ int main(void) {
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
-//        debug(
-//                DEBUG_PRINT_INFO,
-//                DEVICE_CORE,
-//                "Temp -> %u.%u",
-//                Temperature_GetIntValue(),
-//                Temperature_GetDecValue()
-//        );
+        debug(
+                DEBUG_PRINT_INFO,
+                DEVICE_CORE,
+                "Temp -> %u.%u",
+                Temperature_GetIntValue(),
+                Temperature_GetDecValue()
+        );
 //        LedController_OnLedsFromStart(Temperature_GetIntValue());
         if (UART_RingBuf_IsDataAvailable())
         {
