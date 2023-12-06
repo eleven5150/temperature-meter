@@ -5,17 +5,16 @@
 #include "stm32f1xx_hal.h"
 
 /* change the size of the buffer */
-#define UART_BUFFER_SIZE 64
+#define UART_BUFFER_SIZE 512
 
 typedef struct {
     unsigned char buffer[UART_BUFFER_SIZE];
     volatile unsigned int head;
     volatile unsigned int tail;
-} ring_buffer;
+} RingBuf_t;
 
 
-void UART_RingBuf_StoreChar(unsigned char sym, ring_buffer *buffer);
-
+void UART_RingBuf_StoreChar(unsigned char sym, RingBuf_t *buffer);
 
 /* Initialize the ring buffer */
 void UART_RingBuf_Init(void);

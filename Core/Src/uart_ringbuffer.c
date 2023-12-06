@@ -8,11 +8,11 @@ UART_HandleTypeDef huart1;
 uint16_t uart_ringbuf_timeout;
 
 
-ring_buffer rx_buffer = {{0}, 0, 0};
-ring_buffer tx_buffer = {{0}, 0, 0};
+RingBuf_t rx_buffer = {{0}, 0, 0};
+RingBuf_t tx_buffer = {{0}, 0, 0};
 
-ring_buffer *_rx_buffer;
-ring_buffer *_tx_buffer;
+RingBuf_t *_rx_buffer;
+RingBuf_t *_tx_buffer;
 
 
 void UART_RingBuf_Init(void) {
@@ -26,7 +26,7 @@ void UART_RingBuf_Init(void) {
     __HAL_UART_ENABLE_IT(uart, UART_IT_RXNE);
 }
 
-void UART_RingBuf_StoreChar(unsigned char sym, ring_buffer *buffer) {
+void UART_RingBuf_StoreChar(unsigned char sym, RingBuf_t *buffer) {
     int i = (unsigned int) (buffer->head + 1) % UART_BUFFER_SIZE;
 
     // if we should be storing the received character into the location

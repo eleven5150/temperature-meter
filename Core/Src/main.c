@@ -100,16 +100,15 @@ int main(void) {
     HAL_ADC_Start_IT(&hadc1);
     LedController_OffAllLeds();
     UART_RingBuf_Init();
-//    HAL_UART_Receive_IT(&huart1, (uint8_t *) str1, 1);
     HAL_Delay(1000);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
 //    HAL_Delay(1000);
     ESP_Send("AT");
-//    ESP_Send("AT+CWMODE=1");
-//    ESP_Send("AT+CIPMUX=1");
-//    ESP_Send("AT+CIFSR");
-//    ESP_Send("AT+CIPSERVER=1,80");
+    ESP_Send("AT+CWMODE=1");
+    ESP_Send("AT+CIPMUX=1");
+    ESP_Send("AT+CIFSR");
+    ESP_Send("AT+CIPSERVER=1,80");
 
 
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Device initialized");
