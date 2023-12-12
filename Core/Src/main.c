@@ -96,19 +96,19 @@ int main(void) {
     /* USER CODE BEGIN 2 */
     RetargetInit(&huart2);
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Initialization");
-    HAL_ADCEx_Calibration_Start(&hadc1);
-    HAL_ADC_Start_IT(&hadc1);
-    LedController_OffAllLeds();
-    UART_RingBuf_Init();
+//    HAL_ADCEx_Calibration_Start(&hadc1);
+//    HAL_ADC_Start_IT(&hadc1);
+//    LedController_OffAllLeds();
+//    UART_RingBuf_Init();
     HAL_Delay(1000);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
 //    HAL_Delay(1000);
-    ESP_Send("AT");
-    ESP_Send("AT+CWMODE=1");
-    ESP_Send("AT+CIPMUX=1");
-    ESP_Send("AT+CIFSR");
-    ESP_Send("AT+CIPSERVER=1,80");
+//    ESP_Send("AT");
+//    ESP_Send("AT+CWMODE=1");
+//    ESP_Send("AT+CIPMUX=1");
+//    ESP_Send("AT+CIFSR");
+//    ESP_Send("AT+CIPSERVER=1,80");
 
 
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Device initialized");
@@ -124,11 +124,11 @@ int main(void) {
                 Temperature_GetIntValue(),
                 Temperature_GetDecValue()
         );
-        LedController_OnLedsFromStart(Temperature_GetIntValue());
-        if (UART_RingBuf_IsDataAvailable())
-        {
-            ESP_Receive();
-        }
+//        LedController_OnLedsFromStart(Temperature_GetIntValue());
+//        if (UART_RingBuf_IsDataAvailable())
+//        {
+//            ESP_Receive();
+//        }
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         HAL_Delay(WORK_CYCLE);
         /* USER CODE END WHILE */
@@ -150,13 +150,12 @@ void SystemClock_Config(void) {
     /** Initializes the RCC Oscillators according to the specified parameters
     * in the RCC_OscInitTypeDef structure.
     */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-    RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
-    RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
     RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI_DIV2;
+    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
         Error_Handler();
     }
