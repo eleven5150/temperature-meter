@@ -3,7 +3,7 @@
 - [x] E3
 - [x] BOM
 - [ ] E4
-- [ ] PCB
+- [x] PCB
 - [ ] Assembly
 - [ ] Specs
 
