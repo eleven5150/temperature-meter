@@ -4,8 +4,8 @@
 - [x] BOM
 - [ ] E4
 - [x] PCB
-- [ ] Assembly
-- [ ] Specs
+- [x] Assembly
+- [x] Specs
 
 # Device
 
