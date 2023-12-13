@@ -15,3 +15,5 @@
 - [ ] Case Assembly 
 - [ ] Device Specs
 - [ ] Tech process
+- [x] Research stand
+- [ ] Research result
