@@ -16,4 +16,4 @@
 - [ ] Device Specs
 - [ ] Tech process
 - [x] Research stand
-- [ ] Research result
+- [x] Research result
