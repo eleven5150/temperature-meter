@@ -13,7 +13,7 @@
 - [ ] Case Base
 - [ ] Case Cap
 - [ ] Case Assembly 
-- [ ] Device Specs
+- [x] Device Specs
 - [ ] Tech process
 - [x] Research stand
 - [x] Research result
