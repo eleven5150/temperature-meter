@@ -96,19 +96,19 @@ int main(void) {
     /* USER CODE BEGIN 2 */
     RetargetInit(&huart2);
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Initialization");
-//    HAL_ADCEx_Calibration_Start(&hadc1);
-//    HAL_ADC_Start_IT(&hadc1);
-//    LedController_OffAllLeds();
-//    UART_RingBuf_Init();
+    HAL_ADCEx_Calibration_Start(&hadc1);
+    HAL_ADC_Start_IT(&hadc1);
+    LedController_OffAllLeds();
+    UART_RingBuf_Init();
     HAL_Delay(1000);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
 //    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
 //    HAL_Delay(1000);
-//    ESP_Send("AT");
-//    ESP_Send("AT+CWMODE=1");
-//    ESP_Send("AT+CIPMUX=1");
-//    ESP_Send("AT+CIFSR");
-//    ESP_Send("AT+CIPSERVER=1,80");
+    ESP_Send("AT");
+    ESP_Send("AT+CWMODE=1");
+    ESP_Send("AT+CIPMUX=1");
+    ESP_Send("AT+CIFSR");
+    ESP_Send("AT+CIPSERVER=1,80");
 
 
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Device initialized");
@@ -124,11 +124,11 @@ int main(void) {
                 Temperature_GetIntValue(),
                 Temperature_GetDecValue()
         );
-//        LedController_OnLedsFromStart(Temperature_GetIntValue());
-//        if (UART_RingBuf_IsDataAvailable())
-//        {
-//            ESP_Receive();
-//        }
+        LedController_OnLedsFromStart(Temperature_GetIntValue() / 2);
+        if (UART_RingBuf_IsDataAvailable())
+        {
+            ESP_Receive();
+        }
         HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         HAL_Delay(WORK_CYCLE);
         /* USER CODE END WHILE */
