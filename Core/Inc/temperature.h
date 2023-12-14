@@ -8,11 +8,15 @@
 #define VOLTAGE 3.3
 #define TEMPERATURE_MULTIPLIER 1000
 
+#define TEMP_MEASURE_BUFF_SIZE 10
+
 #define LED_STRIP_CORRECTION 41
+
+void Temperature_UpdateValue();
 
 uint16_t Temperature_GetFullValue();
 
-void Temperature_UpdateValue();
+void Temperature_UpdateBuffValue();
 
 uint8_t Temperature_GetIntValue();
 

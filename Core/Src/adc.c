@@ -131,7 +131,7 @@ uint16_t ADC_GetValue() {
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
     if (hadc->Instance == ADC1) {
         ADC_SetValue(HAL_ADC_GetValue(&hadc1));
-        Temperature_UpdateValue();
+        Temperature_UpdateBuffValue();
     }
 }
 

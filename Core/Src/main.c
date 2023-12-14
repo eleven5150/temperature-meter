@@ -124,7 +124,7 @@ int main(void) {
                 Temperature_GetIntValue(),
                 Temperature_GetDecValue()
         );
-        LedController_OnLedsFromStart(Temperature_GetIntValue() / 2);
+        LedController_OnLedsFromStart(Temperature_GetIntValue() - 10);
         if (UART_RingBuf_IsDataAvailable())
         {
             ESP_Receive();
