@@ -82,7 +82,7 @@ void Error_Handler(void);
 #define LED_STRIP_OUT_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-#define WORK_CYCLE 1000
+#define WORK_CYCLE 300
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

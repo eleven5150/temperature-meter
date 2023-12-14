@@ -2,6 +2,15 @@
 
 
 
+void ESP_Init() {
+    ESP_Send("AT");
+    ESP_Send("AT+CWMODE=1");
+    ESP_Send("AT+CIPMUX=1");
+    ESP_Send("AT+CIFSR");
+    ESP_Send("AT+CIPSERVER=1,80");
+}
+
+
 void ESP_Receive() {
     char buff[256] = {0};
 

@@ -1,5 +1,28 @@
 #include "led_controller.h"
 
+static LedData_t TEMPERATURE_SCALE[PHYSICAL_NUM_OF_LEDS] = {
+        {0, 0, 20},
+        {0, 0, 18},
+        {0, 0, 16},
+        {0, 0, 14},
+        {0, 0, 12},
+        {0, 1, 10},
+        {0, 2, 9},
+        {0, 3, 8},
+        {0, 4, 7},
+        {0, 5, 6},
+        {0, 6, 5},
+        {0, 7, 4},
+        {0, 8, 3},
+        {0, 9, 2},
+        {0, 10, 1},
+        {0, 12, 0},
+        {0, 14, 0},
+        {0, 16, 0},
+        {0, 18, 0},
+        {0, 20, 0},
+};
+
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM2) {
@@ -94,14 +117,9 @@ void LedController_OffAllLeds(void) {
 
 void LedController_OnLedsFromStart(uint8_t num_of_leds) {
     LedController_ClearLedData();
-    LedData_t blue_led = {
-            ZERO_COLOUR_INTENSITY,
-            ZERO_COLOUR_INTENSITY,
-            AVERAGE_COLOR_INTENSITY
-    };
 
     for (uint8_t i = 0; i < num_of_leds; i++) {
-        LedController_SetLedData(i, &blue_led);
+        LedController_SetLedData(i, &TEMPERATURE_SCALE[i]);
     }
     LedController_SendDataToStrip();
 }

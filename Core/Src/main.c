@@ -96,21 +96,17 @@ int main(void) {
     /* USER CODE BEGIN 2 */
     RetargetInit(&huart2);
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Initialization");
+    debug(DEBUG_PRINT_INFO, DEVICE_CORE, "ADC Calibration");
     HAL_ADCEx_Calibration_Start(&hadc1);
+    debug(DEBUG_PRINT_INFO, DEVICE_CORE, "ADC Starting");
     HAL_ADC_Start_IT(&hadc1);
+    debug(DEBUG_PRINT_INFO, DEVICE_CORE, "LedStrip Init");
     LedController_OffAllLeds();
+    debug(DEBUG_PRINT_INFO, DEVICE_CORE, "UART Ring Buffer Init");
     UART_RingBuf_Init();
     HAL_Delay(1000);
-//    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
-//    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
-//    HAL_Delay(1000);
-    ESP_Send("AT");
-    ESP_Send("AT+CWMODE=1");
-    ESP_Send("AT+CIPMUX=1");
-    ESP_Send("AT+CIFSR");
-    ESP_Send("AT+CIPSERVER=1,80");
-
-
+    debug(DEBUG_PRINT_INFO, DEVICE_CORE, "ESP Init");
+    ESP_Init();
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Device initialized");
     /* USER CODE END 2 */
 
@@ -124,7 +120,7 @@ int main(void) {
                 Temperature_GetIntValue(),
                 Temperature_GetDecValue()
         );
-        LedController_OnLedsFromStart(Temperature_GetIntValue() - 10);
+        LedController_OnLedsFromStart(Temperature_GetIntValue() - TEMP_START_VALUE);
         if (UART_RingBuf_IsDataAvailable())
         {
             ESP_Receive();

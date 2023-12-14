@@ -13,6 +13,8 @@
 #define HTTP_CORE "<a class=\"button\" href=\"/ledoff\">%u.%u C</a>"
 #define HTTP_FOOTER "</body>\n  <footer>\n    <p style=\"font-size: 20px; color: #888\">Kutaev Kirill ICS4-31M, BMSTU 2023</p>\n  </footer>\n</html>"
 
+void ESP_Init();
+
 void ESP_Receive();
 
 void ESP_Send(char *string);
