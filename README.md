@@ -6,9 +6,9 @@
 
 # Demo
 
+Link to a video demonstration of the device's functionality
 [Video](https://drive.google.com/file/d/12vUG7TxpgPC9e38MXSXuw1ZNHgoio4qw/view?usp=drive_link)
 
-Link to a video demonstration of the device's functionality
 ![device_1.jpg](images/web.jpg)
 
 # ESP Settings
