@@ -57,7 +57,12 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void LED_Blinking() {
+    for (uint8_t i = 0; i < 20; i++) {
+        HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+        HAL_Delay(20);
+    }
+}
 
 /* USER CODE END 0 */
 
@@ -96,6 +101,7 @@ int main(void) {
     /* USER CODE BEGIN 2 */
     RetargetInit(&huart2);
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "Initialization");
+    LED_Blinking();
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "ADC Calibration");
     HAL_ADCEx_Calibration_Start(&hadc1);
     debug(DEBUG_PRINT_INFO, DEVICE_CORE, "ADC Starting");
@@ -125,7 +131,6 @@ int main(void) {
         {
             ESP_Receive();
         }
-        HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
         HAL_Delay(WORK_CYCLE);
         /* USER CODE END WHILE */
 
