@@ -9,7 +9,7 @@
 
 # Device
 
-- [ ] Algorithm
+- [x] Algorithm
 - [ ] Case Base
 - [ ] Case Cap
 - [ ] Case Assembly 
