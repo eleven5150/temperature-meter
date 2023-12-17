@@ -10,10 +10,9 @@
 # Device
 
 - [x] Algorithm
-- [ ] Case Base
+- [x] Case Base
 - [ ] Case Cap
 - [ ] Case Assembly 
 - [x] Device Specs
-- [ ] Tech process
 - [x] Research stand
 - [x] Research result
