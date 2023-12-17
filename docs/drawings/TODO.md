@@ -11,7 +11,7 @@
 
 - [x] Algorithm
 - [x] Case Base
-- [ ] Case Cap
+- [x] Case Cap
 - [ ] Case Assembly 
 - [x] Device Specs
 - [x] Research stand
