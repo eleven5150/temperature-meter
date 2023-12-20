@@ -4,10 +4,15 @@
 
 void ESP_Init() {
     ESP_Send("AT");
+    HAL_Delay(100);
     ESP_Send("AT+CWMODE=1");
+    HAL_Delay(100);
     ESP_Send("AT+CIPMUX=1");
+    HAL_Delay(100);
     ESP_Send("AT+CIFSR");
+    HAL_Delay(100);
     ESP_Send("AT+CIPSERVER=1,80");
+    HAL_Delay(100);
 }
 
 
