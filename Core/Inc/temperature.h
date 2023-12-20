@@ -12,7 +12,7 @@
 
 #define TEMP_MEASURE_BUFF_SIZE 10
 
-#define LED_STRIP_CORRECTION 41
+#define LED_STRIP_CORRECTION 25
 
 void Temperature_UpdateValue();
 

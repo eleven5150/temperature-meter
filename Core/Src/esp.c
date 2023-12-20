@@ -3,6 +3,9 @@
 
 
 void ESP_Init() {
+    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
+//    HAL_Delay(5000);
+    HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
     ESP_Send("AT");
     HAL_Delay(100);
     ESP_Send("AT+CWMODE=1");

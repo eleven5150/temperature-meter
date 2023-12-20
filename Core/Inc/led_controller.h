@@ -8,8 +8,6 @@
 #include "tim.h"
 #include "dma.h"
 
-#define LED_STRIP_ON
-
 #define NUMBER_OF_LEDS 144
 #define PHYSICAL_NUM_OF_LEDS 20
 #define RESERVE_TAIL_BITS 50
